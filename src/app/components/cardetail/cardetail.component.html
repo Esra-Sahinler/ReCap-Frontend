@@ -1,11 +1,16 @@
 <div class="card text-light bg-dark mb-12" style="width: 40rem;">
-    <img>
-    <div class="card-body">
-      <h5 *ngFor="let cardetail of carDetails" class="card-title">{{cardetail.description}}</h5>
-    </div>
+  <img [src]="setImage()" 
+     class=""
+     style="height: 100%; width: 100%; object-fit: contain"
+/>
     <ul *ngFor="let cardetail of carDetails" class="list-group list-group-flush">
       <li class="list-group-item list-group-item-dark">{{cardetail.brandName}}</li>
       <li class="list-group-item list-group-item-dark">{{cardetail.colorName}}</li>
       <li class="list-group-item list-group-item-dark">{{cardetail.dailyPrice}}</li>
+      <li class="list-group-item list-group-item-dark">{{cardetail.description}}</li>
+      <button class="btn btn-primary"
+           routerLink="/cars/rental/{{cardetail.Id}}">
+      <i class="bi-search me-1"></i> Kirala
+    </button>
     </ul>
 </div>

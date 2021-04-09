@@ -1,6 +1,36 @@
 <div *ngIf="dataLoaded==false" class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
 </div>
+<div class="row">
+<div class="col-md-4">
+    <select class="form-select rounded-0" [(ngModel)]="brandFilter">
+       <option value="0">- - Marka Seçiniz - -</option>
+ 
+       <option *ngFor="let brand of brands" value="{{ brand.brandId }}">
+          {{ brand.brandName }}
+       </option>
+    </select>
+ </div>
+
+ <div class="col-md-4">
+    <select class="form-select rounded-0" [(ngModel)]="colorFilter">
+       <option value="0">- - Renk Seçiniz - -</option>
+ 
+       <option *ngFor="let color of colors" value="{{ color.colorId }}">
+          {{ color.colorName }}
+       </option>
+    </select>
+ </div>
+
+ <div class="col-lg">
+    <div class="d-grid">
+       <button class="btn btn-primary"
+               routerLink="/cars/filter/{{ brandFilter }}/{{ colorFilter }}">
+          <i class="bi-search me-1"></i> Filtrele
+       </button>
+    </div>
+ </div>
+</div>
 <table *ngIf="dataLoaded==true" class="table">
     <thead>
         <tr>
@@ -14,10 +44,15 @@
     </thead>
     <tr *ngFor="let car of cars">
         <td>{{car.Id}}</td>
-        <td>{{car.brandName}}</td>
-        <td>{{car.colorName}}</td>
+        <td>{{car.brandId}}</td>
+        <td>{{car.colorId}}</td>
         <td>{{car.modelYear}}</td>
         <td>{{car.dailyPrice}}</td>
         <td>{{car.description}}</td>
+        <td>
+            <a  class="btn btn-outline-secondary"
+                routerLink="/cars/detail{{car.Id}}">Detay
+            </a>
+        </td>
     </tr>
 </table>
