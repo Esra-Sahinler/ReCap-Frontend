@@ -5,4 +5,5 @@ export interface Car{
     modelYear:Number;
     dailyPrice:number;
     description:string;
+    findexPoint:number;
 }

@@ -1,36 +1,55 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<div class="container my-lg-5 mt-3">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border shadow px-4">
+     <a class="navbar-brand" routerLink="cars"><i class="bi-bullseye me-1"></i> {{ title }}</a>
+
+     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarContent">
         <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
+     </button>
+
+     <div class="collapse navbar-collapse" id="navbarContent">
+        <div class="navbar-nav mb-2 mb-lg-0">
+           <a class="nav-item nav-link" routerLink="cars" routerLinkActive="active">Arabalar</a>
+           <a class="nav-item nav-link" routerLink="brands" routerLinkActive="active">Markalar</a>
+           <a class="nav-item nav-link" routerLink="colors" routerLinkActive="active">Renkler</a>
+        </div>
+
+        <div class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <div *ngIf="!isAuth()">
+            <button class="btn btn-outline-primary rounded-pill px-4" routerLink="/register">
+               <i class="bi-person-fill me-1"></i> Üye Ol
+            </button>
+         
+            <button class="btn btn-primary rounded-pill px-4 ms-lg-2" routerLink="/login">
+               <i class="bi-box-arrow-in-right me-1"></i> Giriş Yap
+            </button>
+         </div>
+         
+         <div *ngIf="isAuth() && getCurrentCustomer()">
+            <div class="btn-group d-grid">
+               <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                  <i class="bi-person-circle me-1"></i>
+                  {{ getCurrentCustomer().firstName }} {{ getCurrentCustomer().lastName }}
+               </button>
+         
+               <div class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                  <div class="dropdown-item cursor-none">
+                     <i class="bi-check2 me-1"></i>
+                     {{ getCurrentCustomer().findexPoint }} Findex Puanı
+                  </div>
+         
+                  <hr class="dropdown-divider">
+         
+                  <div class="dropdown-item" routerLink="/profile">
+                     <i class="bi-pencil me-1"></i> Profili Düzenle
+                  </div>
+         
+                  <div class="dropdown-item" (click)="logout()">
+                     <i class="bi-box-arrow-right me-1"></i> Çıkış Yap
+                  </div>
+               </div>
+            </div>
+         </div>
+        </div>
+     </div>
   </nav>
+</div>

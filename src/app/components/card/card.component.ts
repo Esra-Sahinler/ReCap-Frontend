@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Car } from 'src/app/models/car';
@@ -8,6 +9,7 @@ import { Rental } from 'src/app/models/rental';
 import { CarService } from 'src/app/services/car.service';
 import { CardService } from 'src/app/services/card.service';
 import { CustomerService } from 'src/app/services/customer.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RentalService } from 'src/app/services/rental.service';
 
 @Component({
@@ -28,6 +30,8 @@ export class CardComponent implements OnInit {
   card: Card;
   cardExist: Boolean = false;
   moneyInTheCard:number;
+  cardAddForm: FormGroup;
+  findeksChecked = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -36,7 +40,8 @@ export class CardComponent implements OnInit {
     private router: Router,
     private toastrService: ToastrService,
     private rentalService: RentalService,
-    private CardService: CardService
+    private cardService: CardService,
+    private localStorageService: LocalStorageService
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +96,8 @@ export class CardComponent implements OnInit {
       cardNumber: this.cardNumber,
       validDate: this.validDate,
       CVV: this.CVV,
-      moneyInTheCard: this.card.moneyInTheCard
+      moneyInTheCard: this.card.moneyInTheCard,
+      save: [true]
     };
     this.cardExist = await this.isCardExist(card);
     if (this.cardExist) {
@@ -100,7 +106,7 @@ export class CardComponent implements OnInit {
         this.card.moneyInTheCard =
           this.card.moneyInTheCard - this.amountOfPayment;
         this.updateCard(card);
-        this.rentalService.addRental(this.rental);
+        this.rentalService.add(this.rental);
         this.toastrService.success('Arabayı kiraladınız', 'Işlem başarılı');
       } else {
         this.toastrService.error(
@@ -114,16 +120,84 @@ export class CardComponent implements OnInit {
   }
 
   async isCardExist(card: Card) {
-    return (await this.CardService.isCardExist(card).toPromise())
+    return (await this.cardService.isCardExist(card).toPromise())
       .success;
   }
 
   async getCardByCardNumber(cardNumber: string) {
-    return (await this.CardService.getCardByNumber(cardNumber).toPromise())
+    return (await this.cardService.getCardByNumber(cardNumber).toPromise())
       .data[0];
   }
 
   updateCard(card: Card) {
-    this.CardService.updateCard(card);
+    this.cardService.updateCard(card);
   }
+
+  add() {
+    this.rental = Object.assign({}, this.rentalService.getRentingCar());
+
+    if (this.cardAddForm.invalid) {
+       return this.toastrService.warning('Bilgilerinizi kontrol ediniz', 'Dikkat');
+    }
+
+    if (this.cardAddForm.value.save) {
+       delete this.cardAddForm.value.save;
+       this.card = Object.assign({}, this.cardAddForm.value);
+       this.addCard(this.card);
+    }
+
+    return this.addRental(this.rental);
+ }
+
+ addCard(card: Card) {
+  this.cardService.addCard(card).subscribe(responseSuccess => {
+     return responseSuccess.success;
+  }, responseError => {
+     if (responseError.error.ValidationErrors.length > 0) {
+        for (let i = 0; i < responseError.error.ValidationErrors.length; i++) {
+           this.toastrService.error(
+              responseError.error.ValidationErrors[i].ErrorMessage, 'Doğrulama Hatası'
+           );
+        }
+
+        return;
+     }
+
+     this.toastrService.error(responseError.error.Message, responseError.error.StatusCode);
+     return;
+  });
+}
+setSelectedCard(cardOnEventing: Card) {
+  this.card = Object.assign(cardOnEventing, { save: false });
+  this.cardAddForm.setValue(this.card);
+}
+addRental(rental: Rental) {
+  this.rentalService.add(rental).subscribe(responseSuccess => {
+     this.toastrService.success(responseSuccess.message, 'Başarılı');
+     this.updateCurrentCustomerFindexPoint();
+
+     return this.router.navigate(['']);
+  }, responseError => {
+     console.log(responseError);
+     if (responseError.error.ValidationErrors) {
+        for (let i = 0; i < responseError.error.ValidationErrors.length; i++) {
+           this.toastrService.error(
+              responseError.error.ValidationErrors[i].ErrorMessage, 'Doğrulama Hatası'
+           );
+        }
+
+        return false;
+     }
+
+     this.toastrService.error(responseError.error.message, 'Hata');
+     return false;
+  });
+}
+updateCurrentCustomerFindexPoint() {
+  let currentCustomer = this.localStorageService.getCurrentCustomer();
+
+  this.customerService.getCustomerByEmail(currentCustomer.email).subscribe(response => {
+     this.localStorageService.setCurrentCustomer(response.data);
+  });
+}
 }

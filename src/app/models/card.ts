@@ -4,5 +4,7 @@ export interface Card{
     cardNumber:string;
     validDate:string;
     CVV:string;
+    customerId?:number;
     moneyInTheCard:number;
+    save:boolean[];
 }
