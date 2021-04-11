@@ -40,15 +40,17 @@
             <th>Model Yılı</th>
             <th>Günlük Fiyat</th>
             <th>Açıklama</th>
+            <th>Findex Puanı</th>
         </tr>
     </thead>
     <tr *ngFor="let car of cars">
-        <td>{{car.Id}}</td>
-        <td>{{car.brandId}}</td>
-        <td>{{car.colorId}}</td>
-        <td>{{car.modelYear}}</td>
-        <td>{{car.dailyPrice}}</td>
-        <td>{{car.description}}</td>
+        <td appHighlight>{{car.Id}}</td>
+        <td appHighlight>{{car.brandId}}</td>
+        <td appHighlight>{{car.colorId}}</td>
+        <td appHighlight>{{car.modelYear}}</td>
+        <td appHighlight>{{car.dailyPrice}}</td>
+        <td appHighlight>{{car.description}}</td>
+        <td appHighlight>{{car.findexPoint}}</td>
         <td>
             <a  class="btn btn-outline-secondary"
                 routerLink="/cars/detail{{car.Id}}">Detay

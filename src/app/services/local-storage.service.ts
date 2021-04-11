@@ -8,7 +8,7 @@ import { TokenModel } from '../models/tokenModel';
 export class LocalStorageService {
 
   tokenKey: string = 'token';
-   currentCustomer: string = 'currentCustomer';
+  currentCustomer: string = 'currentCustomer';
   constructor() { }
 
   setToken(tokenValue: TokenModel) {

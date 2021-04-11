@@ -30,6 +30,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CardSavedComponent } from './components/card/card-saved/card-saved.component';
+import { HighlightDirective } from './directives/highlight.directive';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { CardSavedComponent } from './components/card/card-saved/card-saved.comp
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
-    CardSavedComponent
+    CardSavedComponent,
+    HighlightDirective
   ],
   imports: [
     BrowserModule,
